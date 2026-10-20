@@ -31,7 +31,16 @@ class Hero:
     """
 
     def __init__(self, name: str, hero_class: str, max_health: int = 100) -> None:
-        pass
+        self.name: str = name
+        self.hero_class: str = hero_class
+        self.max_health: int = max_health
+        self.health: int = max_health
+
+        # Hero Inventory
+        self.inventory: Bag = Bag(capacity=20)
+
+        # Hero weapons
+        self.equipped_weapons: Bag = Bag(capacity=3)
 
     # ── Health ────────────────────────────────────────────────────────────────
 

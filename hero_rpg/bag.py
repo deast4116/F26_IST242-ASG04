@@ -37,7 +37,10 @@ class Bag(Generic[T]):
             True  — item added successfully.
             False — bag is at capacity; item rejected.
         """
-        self.capacity
+        if len(self._items) < self.capacity:
+            self._items.append(item)
+            return True
+        
 
     def remove(self, item: T) -> bool:
         """
@@ -47,16 +50,21 @@ class Bag(Generic[T]):
             True  — item found and removed.
             False — item not present in the bag.
         """
-        pass
+        try:
+            self._items.remove(item)
+            return True
+        except ValueError:
+            return False
 
     def all(self) -> list[T]:
         """Return a shallow copy so the internal list stays protected."""
-        pass
+        return self._items.copy()
 
     def is_full(self) -> bool:
         """Return True when no more items can be added."""
-        pass
+        return len(self._items) >= self.capacity
 
     def __len__(self) -> int:
         """Support len(bag)."""
-        pass
+        return len(self._items)
+
