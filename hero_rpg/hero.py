@@ -38,9 +38,26 @@ class Hero:
 
         # Hero Inventory
         self.inventory: Bag = Bag(capacity=20)
+        self.items_by_type: defaultdict[str, list[Item]] = defaultdict(list)
 
         # Hero weapons
         self.equipped_weapons: Bag = Bag(capacity=3)
+        self.skills: set[str] = set()
+        
+        #Hero skills
+        self.skills: set = set()
+        assert hero_stats["strength": 10]
+        assert hero_stats["dexterity": 10]
+        assert hero_stats["intelligence": 10]
+        assert hero_stats["defense": 5]
+
+        # Hero combat tracker
+        self.kill_log: Counter[str] = Counter()
+        self.combat_log: deque[str] = deque(maxlen=10)
+        
+
+
+
 
     # ── Health ────────────────────────────────────────────────────────────────
 
@@ -60,7 +77,10 @@ class Hero:
         Returns:
             Actual HP restored (may be less if already near full).
         """
-        pass
+        actual: int = min(amount, self.max_health - self.health)
+        self.health = self.health + actual
+        return actual
+
 
     def is_alive(self) -> bool:
         """Return True as long as health is above zero."""
@@ -111,7 +131,7 @@ class Hero:
         Record defeating an enemy.
         Counter accumulates each enemy type; no manual initialization needed.
         """
-        pass
+        self.kill_log[enemy_type] += 1
 
     def total_damage_potential(self) -> int:
         """Sum damage of all currently equipped weapons."""
@@ -122,7 +142,7 @@ class Hero:
         Return the top N most-killed enemy types.
         Counter.most_common() returns them in descending order of count.
         """
-        pass
+        return self.kill_log.most_common(n)
 
     # ── Stats ─────────────────────────────────────────────────────────────────
 
