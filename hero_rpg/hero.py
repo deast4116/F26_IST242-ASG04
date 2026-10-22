@@ -103,6 +103,8 @@ class Hero:
             True if equipped; False if weapon slots are full.
         """
         success: bool = self.equipped_weapons.add(weapon)
+        if success:
+            self.combat_log.append(f"{self.name} equipped {weapon.name}.")
         return success
 
     def learn_skill(self, skill: str) -> bool:
@@ -112,7 +114,12 @@ class Hero:
         Returns:
             True if new skill; False if already known.
         """
-        pass
+        success = bool = false
+        if skill in self.skills:
+            return False
+        self.skills.add(skill)
+        self.combat_log.append(f"{self.name} learned {skill}.")
+        return True
 
     # ── Inventory ─────────────────────────────────────────────────────────────
 
