@@ -18,10 +18,8 @@ Imports from:
 """
 
 from collections import defaultdict, Counter, deque
-from hero_rpg.enums   import ItemType
 from hero_rpg.models  import Weapon, Item
 from hero_rpg.bag     import Bag
-from hero_rpg import ItemType, Weapon, Item, Bag
 
 
 class Hero:
@@ -38,21 +36,21 @@ class Hero:
 
         # Hero Inventory
         self.inventory: Bag = Bag(capacity=20)
-        self.items_by_type: defaultdict[str, list[Item]] = defaultdict(list)
+        self._item_registry: defaultdict[str, list[Item]] = defaultdict(list)
 
         # Hero weapons
         self.equipped_weapons: Bag = Bag(capacity=3)
         self.skills: set[str] = set()
         
-        #Hero skills
-        self.skills: set = set()
-        assert hero_stats["strength": 10]
-        assert hero_stats["dexterity": 10]
-        assert hero_stats["intelligence": 10]
-        assert hero_stats["defense": 5]
+        self.stats: dict[str, int] = {
+            "strength": 10,
+            "dexterity": 10,
+            "intelligence": 10,
+            "defense": 5,
+        }
 
         # Hero combat tracker
-        self.kill_log: Counter[str] = Counter()
+        self.kill_counter: Counter[str] = Counter()
         self.combat_log: deque[str] = deque(maxlen=10)
         
 
@@ -114,7 +112,6 @@ class Hero:
         Returns:
             True if new skill; False if already known.
         """
-        success = bool == false
         if skill in self.skills:
             return False
         self.skills.add(skill)
@@ -133,7 +130,7 @@ class Hero:
         success: bool = self.inventory.add(item)
         if success:
             self.combat_log.append(f"{self.name} picked up {item.name}.")
-            self.item_registry[item.item_type.value].append(item)
+            self._item_registry[item.item_type.value].append(item)
         return success
 
 
@@ -142,7 +139,7 @@ class Hero:
         Return items grouped by ItemType name as a plain dict copy.
         Callers cannot mutate the internal defaultdict directly.
         """
-        return dict(self.item_registry)
+        return dict(self._item_registry)
 
     # ── Combat & Kill Tracking ────────────────────────────────────────────────
 
@@ -151,7 +148,7 @@ class Hero:
         Record defeating an enemy.
         Counter accumulates each enemy type; no manual initialization needed.
         """
-        self.kill_counter[enemy_type] += 1 
+        self.kill_counter[enemy_type] += 1
 
         self.combat_log.append(
             f"{self.name} defeated a {enemy_type}!"
@@ -162,14 +159,14 @@ class Hero:
 
     def total_damage_potential(self) -> int:
         """Sum damage of all currently equipped weapons."""
-        pass
+        return sum(weapon.damage for weapon in self.equipped_weapons.all())
 
     def top_kills(self, n: int = 3) -> list[tuple[str, int]]:
         """
         Return the top N most-killed enemy types.
         Counter.most_common() returns them in descending order of count.
         """
-        return self.kill_log.most_common(n)
+        return self.kill_counter.most_common(n)
 
     # ── Stats ─────────────────────────────────────────────────────────────────
 

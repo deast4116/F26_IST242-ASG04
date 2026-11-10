@@ -40,6 +40,7 @@ class Bag(Generic[T]):
         if len(self._items) < self.capacity:
             self._items.append(item)
             return True
+        return False
         
 
     def remove(self, item: T) -> bool:
@@ -67,4 +68,3 @@ class Bag(Generic[T]):
     def __len__(self) -> int:
         """Support len(bag)."""
         return len(self._items)
-
