@@ -18,9 +18,9 @@ Imports from:
 """
 
 from collections import defaultdict, Counter, deque
-# from hero_rpg.enums   import ItemType
-# from hero_rpg.models  import Weapon, Item
-# from hero_rpg.bag     import Bag
+from hero_rpg.enums   import ItemType
+from hero_rpg.models  import Weapon, Item
+from hero_rpg.bag     import Bag
 from hero_rpg import ItemType, Weapon, Item, Bag
 
 
@@ -114,7 +114,7 @@ class Hero:
         Returns:
             True if new skill; False if already known.
         """
-        success = bool = false
+        success = bool == false
         if skill in self.skills:
             return False
         self.skills.add(skill)
@@ -151,7 +151,14 @@ class Hero:
         Record defeating an enemy.
         Counter accumulates each enemy type; no manual initialization needed.
         """
-        self.kill_log[enemy_type] += 1
+        self.kill_counter[enemy_type] += 1 
+
+        self.combat_log.append(
+            f"{self.name} defeated a {enemy_type}!"
+            f"(total kills: {self.kill_counter[enemy_type]})"
+        )
+
+        
 
     def total_damage_potential(self) -> int:
         """Sum damage of all currently equipped weapons."""
@@ -173,4 +180,18 @@ class Hero:
         Returns:
             True if stat exists and was upgraded; False if key not found.
         """
-        pass
+        if stat not in self.stats:
+            return False
+        self.stats[stat] += amount
+        return True
+
+    def __str__(self) -> str:
+        """Return a human-readable summary of the hero's current state."""
+        return (
+            f"Hero(name={self.name}, class={self.hero_class}, "
+            f"health={self.health}/{self.max_health}, "
+            f"inventory={len(self.inventory)}/{self.inventory.capacity}, "
+            f"weapons={len(self.equipped_weapons)}/{self.equipped_weapons.capacity}, "
+            f"skills={list(self.skills)}, "
+            f"stats={self.stats})"
+        )
